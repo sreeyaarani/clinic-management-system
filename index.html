@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GYM Management System</title>
+  <style>
+    /* styles.css */
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    header {
+      background-color: #222;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    nav a {
+      color: #fff;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    main {
+      padding: 20px;
+      min-height: 70vh;
+    }
+    footer {
+      background-color: #222;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      position: fixed;
+      width: 100%;
+      bottom: 0;
+    }
+    .login-container {
+      background-color: white;
+      padding: 30px;
+      margin: 40px auto;
+      width: 320px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      border-radius: 10px;
+    }
+    .login-container h2 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .login-container input,
+    .login-container button,
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      font-size: 1em;
+    }
+    .login-container button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .login-container button:hover {
+      background-color: #0056b3;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      max-width: 700px;
+      margin: 10px auto;
+    }
+    ul li {
+      background: white;
+      margin: 5px 0;
+      padding: 10px;
+      border-left: 5px solid #007BFF;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 5px;
+    }
+    ul li button {
+      margin-left: 10px;
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    ul li button:hover {
+      background-color: #b52a37;
+    }
+    .section-toggle {
+      display: none;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .active {
+      display: block;
+    }
+    /* Submenu nav inside modules */
+    .module-nav {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .module-nav button {
+      background: #007BFF;
+      color: white;
+      border: none;
+      margin: 0 5px 10px;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1em;
+    }
+    .module-nav button.active {
+      background: #0056b3;
+    }
+    .module-nav button:hover {
+      background: #0056b3;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      background: white;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #007BFF;
+      color: white;
+    }
+    label {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>GYM Management System</h1>
+    <nav>
+      <a onclick="showSection('admin')">Admin</a>
+      <a onclick="showSection('member')">Member</a>
+      <a onclick="showSection('user')">User</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Admin Section -->
+    <section id="admin" class="section-toggle">
+      <div id="admin-login-section" class="login-container">
+        <h2>Admin Login</h2>
+        <form onsubmit="adminLogin(event)">
+          <input type="email" id="adminEmail" placeholder="Email" required />
+          <input type="password" id="adminPassword" placeholder="Password" required />
+          <button type="submit">Login</button>
+        </form>
+        <p id="adminMessage" style="color:red;"></p>
+      </div>
+
+      <div id="admin-dashboard" style="display:none;">
+        <div class="module-nav" id="admin-submenu">
+          <button onclick="adminShowSubmodule('add-member')" class="active">Add Member</button>
+          <button onclick="adminShowSubmodule('manage-members')">Update/Delete Members</button>
+          <button onclick="adminShowSubmodule('create-bills')">Create Bills</button>
+          <button onclick="adminShowSubmodule('assign-fee')">Assign Fee Package</button>
+          <button onclick="adminShowSubmodule('assign-notification')">Assign Notification</button>
+          <button onclick="adminShowSubmodule('report-export')">Report Export</button>
+          <button onclick="adminShowSubmodule('supplement-store')">Supplement Store</button>
+          <button onclick="adminShowSubmodule('diet-details')">Diet Details</button>
+          <button onclick="adminLogout()" style="background:#dc3545;">Logout</button>
+        </div>
+
+        <div id="admin-submodules">
+          <!-- Add Member -->
+          <div id="add-member" class="admin-submodule active">
+            <h3>Add Member</h3>
+            <form onsubmit="addMember(event)">
+              <input type="text" id="memberName" placeholder="Full Name" required />
+              <input type="email" id="memberEmailInput" placeholder="Email" required />
+              <input type="text" id="memberPhone" placeholder="Phone Number" required />
+              <button type="submit">Add Member</button>
+            </form>
+            <p id="addMemberMsg" style="color:green;"></p>
+          </div>
+
+          <!-- Manage Members -->
+          <div id="manage-members" class="admin-submodule" style="display:none;">
+            <h3>Update/Delete Members</h3>
+            <ul id="membersList"></ul>
+          </div>
+
+          <!-- Create Bills -->
+          <div id="create-bills" class="admin-submodule" style="display:none;">
+            <h3>Create Bill</h3>
+            <form onsubmit="createBill(event)">
+              <select id="billMemberSelect" required></select>
+              <input type="number" id="billAmount" placeholder="Amount" required min="1" />
+              <input type="date" id="billDate" required />
+              <textarea id="billDesc" placeholder="Description" rows="3"></textarea>
+              <button type="submit">Create Bill</button>
+            </form>
+            <p id="createBillMsg" style="color:green;"></p>
+          </div>
+
+          <!-- Assign Fee Package -->
+          <div id="assign-fee" class="admin-submodule" style="display:none;">
+            <h3>Assign Fee Package</h3>
+            <form onsubmit="assignFeePackage(event)">
+              <select id="feeMemberSelect" required></select>
+              <select id="feePackageSelect" required>
+                <option value="">Select Package</option>
+                <option value="Monthly - ₹1000">Monthly - ₹1000</option>
+                <option value="Quarterly - ₹2700">Quarterly - ₹2700</option>
+                <option value="Yearly - ₹10000">Yearly - ₹10000</option>
+              </select>
+              <button type="submit">Assign Package</button>
+            </form>
+            <p id="assignFeeMsg" style="color:green;"></p>
+          </div>
+
+          <!-- Assign Notification -->
+          <div id="assign-notification" class="admin-submodule" style="display:none;">
+            <h3>Assign Monthly Notification</h3>
+            <form onsubmit="assignNotification(event)">
+              <select id="notificationMemberSelect" required></select>
+              <textarea id="notificationText" placeholder="Notification message" rows="4" required></textarea>
+              <button type="submit">Send Notification</button>
+            </form>
+            <p id="assignNotificationMsg" style="color:green;"></p>
+          </div>
+
+          <!-- Report Export -->
+          <div id="report-export" class="admin-submodule" style="display:none;">
+            <h3>Report Export (Members & Bills)</h3>
+            <button onclick="exportMembersReport()">Export Members as CSV</button>
+            <button onclick="exportBillsReport()">Export Bills as CSV</button>
+            <p id="exportReportMsg" style="color:green;"></p>
+          </div>
+
+          <!-- Supplement Store -->
+          <div id="supplement-store" class="admin-submodule" style="display:none;">
+            <h3>Supplement Store</h3>
+            <form onsubmit="addSupplement(event)">
+              <input type="text" id="supplementName" placeholder="Supplement Name" required />
+              <input type="number" id="supplementPrice" placeholder="Price" required min="1" />
+              <button type="submit">Add Supplement</button>
+            </form>
+            <p id="addSupplementMsg" style="color:green;"></p>
+
+            <h4>Available Supplements:</h4>
+            <ul id="supplementList"></ul>
+          </div>
+
+          <!-- Diet Details -->
+          <div id="diet-details" class="admin-submodule" style="display:none;">
+            <h3>Diet Details</h3>
+            <form onsubmit="addDietDetail(event)">
+              <input type="text" id="dietMemberName" placeholder="Member Name" required />
+              <textarea id="dietPlan" placeholder="Diet Plan Details" rows="4" required></textarea>
+              <button type="submit">Add Diet Detail</button>
+            </form>
+            <p id="addDietMsg" style="color:green;"></p>
+
+            <h4>Diet Plans:</h4>
+            <ul id="dietList"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Member Section -->
+    <section id="member" class="section-toggle">
+      <div id="member-login-section" class="login-container">
+        <h2>Member Login</h2>
+        <form onsubmit="memberLogin(event)">
+          <input type="email" id="memberEmail" placeholder="Email" required />
+          <input type="password" id="memberPassword" placeholder="Password" required />
+          <button type="submit">Login</button>
+        </form>
+        <p id="memberMessage" style="color:red;"></p>
+      </div>
+
+      <div id="member-dashboard" style="display:none;">
+        <div class="module-nav" id="member-submenu">
+          <button onclick="memberShowSubmodule('view-bills')" class="active">View Bill Receipts</button>
+          <button onclick="memberShowSubmodule('view-notifications')">View Bill Notifications</button>
+          <button onclick="memberLogout()" style="background:#dc3545;">Logout</button>
+        </div>
+
+        <div id="member-submodules">
+          <div id="view-bills" class="member-submodule active">
+            <h3>Bill Receipts</h3>
+            <ul id="memberBillsList"></ul>
+          </div>
+          <div id="view-notifications" class="member-submodule" style="display:none;">
+            <h3>Bill Notifications</h3>
+            <ul id="memberNotificationsList"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- User Section -->
+    <section id="user" class="section-toggle">
+      <div id="user-login-section" class="login-container">
+        <h2>User Login</h2>
+        <form onsubmit="userLogin(event)">
+          <input type="email" id="userEmail" placeholder="Email" required />
+          <input type="password" id="userPassword" placeholder="Password" required />
+          <button type="submit">Login</button>
+        </form>
+        <p id="userMessage" style="color:red;"></p>
+      </div>
+
+      <div id="user-dashboard" style="display:none;">
+        <div class="module-nav" id="user-submenu">
+          <button onclick="userShowSubmodule('view-details')" class="active">View Details</button>
+          <button onclick="userShowSubmodule('search-records')">Search Records</button>
+          <button onclick="userLogout()" style="background:#dc3545;">Logout</button>
+        </div>
+
+        <div id="user-submodules">
+          <div id="view-details" class="user-submodule active">
+            <h3>Member Details</h3>
+            <ul id="userDetailsList"></ul>
+          </div>
+          <div id="search-records" class="user-submodule" style="display:none;">
+            <h3>Search Records</h3>
+            <form onsubmit="searchRecords(event)">
+              <input type="text" id="searchInput" placeholder="Search by name or email" required />
+              <button type="submit">Search</button>
+            </form>
+            <ul id="searchResultsList"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 GYM Management System</p>
+  </footer>
+
+  <script>
+    // Global data store (simulate DB)
+    let members = [
+      // Example member
+      { id: 1, name: "John Doe", email: "member@gym.com", phone: "1234567890", feePackage: "", notifications: [], dietPlan: "" }
+    ];
+    let bills = [
+      // Sample bill: memberId, amount, date, description
+      { id: 1, memberId: 1, amount: 1000, date: "2025-06-01", description: "Monthly Membership Fee" }
+    ];
+    let supplements = [];
+    let diets = [];
+
+    // --- Navigation between main modules ---
+    function showSection(id) {
+      document.querySelectorAll('.section-toggle').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    // --- ADMIN LOGIN ---
+    function adminLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('adminEmail').value.trim();
+      const pass = document.getElementById('adminPassword').value.trim();
+      const msg = document.getElementById('adminMessage');
+
+      if (email === "admin@gym.com" && pass === "admin123") {
+        msg.textContent = "";
+        document.getElementById('admin-login-section').style.display = "none";
+        document.getElementById('admin-dashboard').style.display = "block";
+        adminShowSubmodule('add-member');
+        populateMemberSelects();
+        refreshMembersList();
+        refreshSupplementsList();
+        refreshDietList();
+      } else {
+        msg.textContent = "Invalid credentials";
+      }
+    }
+    function adminLogout() {
+      if (confirm("Logout admin?")) {
+        document.getElementById('admin-dashboard').style.display = "none";
+        document.getElementById('admin-login-section').style.display = "block";
+        document.getElementById('adminMessage').textContent = "";
+        document.getElementById('adminEmail').value = "";
+        document.getElementById('adminPassword').value = "";
+      }
+    }
+
+    // Admin submenu navigation
+    function adminShowSubmodule(submoduleId) {
+      const submodules = document.querySelectorAll('#admin-submodules > div.admin-submodule');
+      submodules.forEach(s => s.style.display = "none");
+      document.getElementById(submoduleId).style.display = "block";
+
+      // update button active states
+      const buttons = document.querySelectorAll('#admin-submenu button');
+      buttons.forEach(b => b.classList.remove('active'));
+      document.querySelector(`#admin-submenu button[onclick*="${submoduleId}"]`).classList.add('active');
+    }
+
+    // --- ADMIN: Members Management ---
+    function addMember(e) {
+      e.preventDefault();
+      const name = document.getElementById('memberName').value.trim();
+      const email = document.getElementById('memberEmailInput').value.trim();
+      const phone = document.getElementById('memberPhone').value.trim();
+      const msg = document.getElementById('addMemberMsg');
+
+      if (members.find(m => m.email.toLowerCase() === email.toLowerCase())) {
+        msg.style.color = 'red';
+        msg.textContent = "Member with this email already exists.";
+        return;
+      }
+
+      const id = members.length ? members[members.length -1].id + 1 : 1;
+      members.push({id, name, email, phone, feePackage: "", notifications: [], dietPlan: ""});
+      msg.style.color = 'green';
+      msg.textContent = "Member added successfully.";
+      e.target.reset();
+      populateMemberSelects();
+      refreshMembersList();
